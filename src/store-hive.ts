@@ -1,21 +1,25 @@
-import type Keyv from "keyv";
-import type { DocumentStore } from "./store-base";
+import type { DocumentCache, DocumentStore } from "./store-base";
 
 type HiveOptions = {
 	endpoint: string;
 	accessToken: string;
-	cache: Keyv<string>;
+	cache: DocumentCache<string | null>;
 };
 
 export class HiveStore implements DocumentStore {
-	private cache: Keyv;
+	private cache: DocumentCache<string | null>;
 
 	constructor(private options: HiveOptions) {
 		this.cache = options.cache;
 	}
 
 	async get(documentId: string): Promise<string | undefined> {
-		let document = await this.cache.get(documentId);
+		let document: string | undefined | null;
+		try {
+			document = await this.cache.get(documentId);
+		} catch (e) {
+			console.error(e);
+		}
 		if (document !== undefined) {
 			return document ? document : undefined;
 		}

@@ -60,7 +60,7 @@ describe("HiveStore", () => {
 	});
 
 	it.skip("should return undefined if the fetch fails", async () => {
-		const cache = new Keyv({ store: new Map() });
+		const cache = new Keyv<string | null>({ store: new Map() });
 		const hiveStore = new HiveStore({
 			endpoint: "https://example.com",
 			accessToken: "test-access-token",
