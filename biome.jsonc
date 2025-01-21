@@ -27,6 +27,7 @@
 				"noUnusedVariables": "off"
 			},
 			"suspicious": {
+				"noConfusingVoidType": "off",
 				"noConsoleLog": "error",
 				"noEvolvingTypes": "error",
 				"noExplicitAny": "warn",

@@ -3,6 +3,8 @@ import type {
 	ApolloServerPlugin,
 	BaseContext,
 	GraphQLRequestContext,
+	GraphQLRequestContextDidResolveSource,
+	GraphQLRequestListener,
 } from "@apollo/server";
 import { GraphQLError } from "graphql";
 import type { DocumentStore } from "./store-base";
@@ -30,7 +32,7 @@ export class TrustedDocumentsPlugin<TContext extends BaseContext>
 
 	public async requestDidStart(
 		requestContext: GraphQLRequestContext<TContext>,
-	): Promise<void> {
+	): Promise<void | GraphQLRequestListener<TContext>> {
 		const { request } = requestContext;
 		let documentId: string | undefined;
 
@@ -78,23 +80,31 @@ export class TrustedDocumentsPlugin<TContext extends BaseContext>
 			}
 		}
 
+		let didResolveDocument = false;
+
 		if (documentId) {
 			const query = await this.options.store.get(documentId);
 
-			if (!query) {
-				if (this.options.strict) {
-					throw new GraphQLError("No persisted query found");
-				} else {
-					console.error("No persisted query found for documentId", documentId);
-				}
-			}
-
 			if (query) {
+				didResolveDocument = true;
 				request.query = query;
 				if (request.extensions?.persistedQuery) {
 					request.extensions.persistedQuery = undefined;
 				}
 			}
+		}
+
+		if (!didResolveDocument && this.options.strict) {
+			return {
+				didResolveOperation: (
+					requestContext: GraphQLRequestContextDidResolveSource<TContext>,
+				) => {
+					if (documentId) {
+						throw new GraphQLError("No document found for documentId");
+					}
+					throw new GraphQLError("This operation requires a valid documentId");
+				},
+			};
 		}
 	}
 }
