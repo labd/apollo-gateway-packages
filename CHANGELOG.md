@@ -1,5 +1,11 @@
 # @labdigital/apollo-trusted-documents
 
+## 0.0.3
+
+### Patch Changes
+
+- 3ca71e1: Replace keyv by generic interface based cache
+
 ## 0.0.2
 
 ### Patch Changes
