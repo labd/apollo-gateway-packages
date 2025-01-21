@@ -9,12 +9,14 @@ import type { DocumentStore } from "./store-base";
 
 type PluginOptions = {
 	store?: DocumentStore;
+	strict?: boolean;
 	bypassSecret?: string;
 	bypassHeader?: string;
 };
 
 const pluginDefaults: Partial<PluginOptions> = {
 	bypassHeader: "x-bypass-trusted-operations",
+	strict: true,
 };
 
 export class TrustedDocumentsPlugin<TContext extends BaseContext>
@@ -45,10 +47,20 @@ export class TrustedDocumentsPlugin<TContext extends BaseContext>
 
 		// IF POST, extract from body
 		if (request.http?.method === "POST") {
-			const body = request.http?.body as { documentId?: string };
-			documentId = body.documentId;
+			const body = request.http?.body as {
+				documentId?: string;
+				extensions?: Record<string, unknown>;
+			};
 
-			body.documentId = undefined;
+			// If we have a documentId we use that and remove the
+			// extensions.persistedQueries as this only causes confusion downstream
+			if (body.documentId) {
+				documentId = body.documentId;
+				body.documentId = undefined;
+				if (body.extensions?.persistedQuery) {
+					body.extensions.persistedQuery = undefined;
+				}
+			}
 		}
 
 		// IF GET, extract from search params
@@ -58,6 +70,11 @@ export class TrustedDocumentsPlugin<TContext extends BaseContext>
 				documentId = Array.isArray(qs.documentId)
 					? qs.documentId[0]
 					: qs.documentId;
+
+				// Remove the documentId and extensions from the query string
+				qs.documentId = undefined;
+				qs.extensions = undefined;
+				request.http.search = "?" + querystring.stringify(qs);
 			}
 		}
 
@@ -65,12 +82,18 @@ export class TrustedDocumentsPlugin<TContext extends BaseContext>
 			const query = await this.options.store.get(documentId);
 
 			if (!query) {
-				throw new GraphQLError("No persisted query found");
+				if (this.options.strict) {
+					throw new GraphQLError("No persisted query found");
+				} else {
+					console.error("No persisted query found for documentId", documentId);
+				}
 			}
 
-			request.query = query;
-			if (request.extensions?.persistedQueries) {
-				request.extensions.persistedQueries = undefined;
+			if (query) {
+				request.query = query;
+				if (request.extensions?.persistedQuery) {
+					request.extensions.persistedQuery = undefined;
+				}
 			}
 		}
 	}
