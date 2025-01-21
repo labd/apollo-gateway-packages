@@ -1,5 +1,11 @@
 # @labdigital/apollo-trusted-documents
 
+## 0.0.2
+
+### Patch Changes
+
+- 160a564: Resolve automated release process issue
+
 ## 0.0.1
 
 ### Patch Changes

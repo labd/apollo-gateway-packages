@@ -1,6 +1,6 @@
 {
 	"name": "@labdigital/apollo-trusted-documents",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"license": "MIT",
 	"author": "Lab Digital",
 	"type": "module",
