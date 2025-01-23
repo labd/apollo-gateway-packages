@@ -1,5 +1,11 @@
 # @labdigital/apollo-trusted-documents
 
+## 0.0.4
+
+### Patch Changes
+
+- 56d6acf: Add logic to retry fetching documents from remote store
+
 ## 0.0.3
 
 ### Patch Changes
