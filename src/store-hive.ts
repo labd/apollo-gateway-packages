@@ -1,3 +1,4 @@
+import { fetchWithRetry } from "./fetch";
 import type { DocumentCache, DocumentStore } from "./store-base";
 
 type HiveOptions = {
@@ -32,7 +33,7 @@ export class HiveStore implements DocumentStore {
 		}
 
 		const url = `${this.options.endpoint}/apps/${documentId}`;
-		document = await fetch(url, {
+		document = await fetchWithRetry(url, {
 			headers: {
 				"X-Hive-CDN-Key": this.options.accessToken,
 			},
@@ -43,8 +44,8 @@ export class HiveStore implements DocumentStore {
 				}
 				return null;
 			})
-			.catch(() => {
-				console.error("failed to fetch document from hive");
+			.catch((error) => {
+				console.error("failed to fetch document from hive: ", error);
 				return null;
 			});
 
