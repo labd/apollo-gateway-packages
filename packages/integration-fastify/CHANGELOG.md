@@ -1,5 +1,11 @@
 # @labdigital/apollo-server-integration-fastify
 
+## 0.1.0
+
+### Minor Changes
+
+- fb0c05e: Migrate all packages to a mono-repo
+
 ## 0.0.2
 
 ### Patch Changes
