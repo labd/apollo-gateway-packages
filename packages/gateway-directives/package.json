@@ -1,0 +1,45 @@
+{
+  "name": "@labdigital/apollo-gateway-directives",
+  "version": "0.0.3",
+  "license": "MIT",
+  "author": "Lab Digital",
+  "type": "module",
+  "module": "./dist/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "check": "pnpm lint && tsc",
+    "format": "biome check --fix",
+    "lint": "biome check",
+    "publish:ci": "pnpm build && pnpm changeset publish",
+    "publish:version": "pnpm changeset version && pnpm format",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@graphql-tools/schema": "^10.0.16"
+  },
+  "devDependencies": {
+    "@apollo/server": "^4.11.0",
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.27.1",
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@vitest/coverage-v8": "^1.5.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  },
+  "peerDependencies": {
+    "graphql": ">15.0.0"
+  },
+  "packageManager": "pnpm@9.15.3",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
