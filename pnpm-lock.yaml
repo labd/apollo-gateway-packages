@@ -98,15 +98,15 @@ importers:
 
   packages/trusted-documents:
     dependencies:
+      fetch-retry:
+        specifier: ^6.0.0
+        version: 6.0.0
       graphql:
         specifier: '>15.0.0'
         version: 16.10.0
       keyv:
         specifier: ^5.3.2
         version: 5.3.2
-      msw:
-        specifier: ^2.7.4
-        version: 2.7.4(@types/node@22.14.1)(typescript@5.8.3)
     devDependencies:
       '@apollo/server':
         specifier: ^4.12.0
@@ -123,6 +123,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 3.1.1
         version: 3.1.1(vitest@3.1.1(@types/node@22.14.1)(msw@2.7.4(@types/node@22.14.1)(typescript@5.8.3)))
+      msw:
+        specifier: ^2.7.4
+        version: 2.7.4(@types/node@22.14.1)(typescript@5.8.3)
       tsup:
         specifier: 8.4.0
         version: 8.4.0(postcss@8.5.3)(typescript@5.8.3)
@@ -1454,6 +1457,9 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
+
+  fetch-retry@6.0.0:
+    resolution: {integrity: sha512-BUFj1aMubgib37I3v4q78fYo63Po7t4HUPTpQ6/QE6yK6cIQrP+W43FYToeTEyg5m2Y7eFUtijUuAv/PDlWuag==}
 
   file-entry-cache@6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
@@ -4077,6 +4083,8 @@ snapshots:
   fdir@6.4.3(picomatch@4.0.2):
     optionalDependencies:
       picomatch: 4.0.2
+
+  fetch-retry@6.0.0: {}
 
   file-entry-cache@6.0.1:
     dependencies:

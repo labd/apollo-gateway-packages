@@ -1,16 +1,7 @@
 import { Keyv } from "keyv";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
-import {
-	afterAll,
-	afterEach,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { HiveStore } from "./store-hive";
 
 const server = setupServer();
@@ -19,11 +10,7 @@ describe("HiveStore", () => {
 	beforeAll(() => {
 		server.listen({ onUnhandledRequest: "error" });
 	});
-	beforeEach(() => {
-		vi.spyOn(console, "error").mockImplementation(() => {});
-	});
 	afterEach(() => {
-		vi.restoreAllMocks();
 		server.resetHandlers();
 	});
 	afterAll(() => {
@@ -71,6 +58,7 @@ describe("HiveStore", () => {
 		const result = await hiveStore.get(documentId);
 		expect(result).toBe(fetchedDocument);
 	});
+
 	it("should return undefined if the fetch has a network error", async () => {
 		const cache = new Keyv<string | null>({ store: new Map() });
 		const hiveStore = new HiveStore({
@@ -86,7 +74,7 @@ describe("HiveStore", () => {
 		server.use(
 			http.get(`https://example.com/apps/${documentId}`, ({ request }) => {
 				count += 1;
-				if (count < 2) {
+				if (count < 4) {
 					return HttpResponse.error();
 				}
 				return HttpResponse.text(fetchedDocument);
