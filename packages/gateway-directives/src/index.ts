@@ -23,8 +23,7 @@ export type DirectiveHooks<TContext> = Record<
 	(args: Record<string, unknown>, context: TContext) => Promise<void>
 >;
 
-export class GatewayDirectivesPlugin<TContext extends BaseContext>
-	implements ApolloServerPlugin {
+export class GatewayDirectivesPlugin<TContext extends BaseContext> implements ApolloServerPlugin {
 	directives: Map<string, Map<string, Record<string, string | boolean>>>;
 
 	constructor(private hooks: DirectiveHooks<TContext>) {
@@ -58,12 +57,11 @@ export class GatewayDirectivesPlugin<TContext extends BaseContext>
 	}
 }
 
-class GatewayDirectivesListener<TContext extends BaseContext>
-	implements GraphQLRequestListener<TContext> {
+class GatewayDirectivesListener<TContext extends BaseContext> implements GraphQLRequestListener<TContext> {
 	constructor(
 		private directives: DirectiveMap,
 		private hooks: DirectiveHooks<TContext>,
-	) { }
+	) {}
 
 	public async didResolveOperation(
 		requestContext: GraphQLRequestContextDidResolveOperation<TContext>,
