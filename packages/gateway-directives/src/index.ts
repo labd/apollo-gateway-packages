@@ -24,8 +24,7 @@ export type DirectiveHooks<TContext> = Record<
 >;
 
 export class GatewayDirectivesPlugin<TContext extends BaseContext>
-	implements ApolloServerPlugin
-{
+	implements ApolloServerPlugin {
 	directives: Map<string, Map<string, Record<string, string | boolean>>>;
 
 	constructor(private hooks: DirectiveHooks<TContext>) {
@@ -60,12 +59,11 @@ export class GatewayDirectivesPlugin<TContext extends BaseContext>
 }
 
 class GatewayDirectivesListener<TContext extends BaseContext>
-	implements GraphQLRequestListener<TContext>
-{
+	implements GraphQLRequestListener<TContext> {
 	constructor(
 		private directives: DirectiveMap,
 		private hooks: DirectiveHooks<TContext>,
-	) {}
+	) { }
 
 	public async didResolveOperation(
 		requestContext: GraphQLRequestContextDidResolveOperation<TContext>,
@@ -133,6 +131,8 @@ function parseDirectiveArgs(
 			switch (d.value.kind) {
 				case Kind.BOOLEAN:
 					return [d.name.value, d.value.value];
+				case Kind.LIST:
+					return [d.name.value, d.value.values.map((v) => v.value)];
 				default:
 					throw new Error(`Unsupported value kind: ${d.value.kind}`);
 			}
