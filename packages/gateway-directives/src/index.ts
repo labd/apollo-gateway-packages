@@ -134,7 +134,7 @@ function parseDirectiveArgs(
 				case Kind.BOOLEAN:
 					return [d.name.value, d.value.value];
 				case Kind.LIST:
-					return [d.name.value, d.value.values.map((v) => v.value)];
+					return [d.name.value, d.value.values];
 				default:
 					throw new Error(`Unsupported value kind: ${d.value.kind}`);
 			}
