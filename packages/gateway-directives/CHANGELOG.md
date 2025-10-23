@@ -1,5 +1,11 @@
 # @labdigital/apollo-gateway-directives
 
+## 0.1.1
+
+### Patch Changes
+
+- dbc2fd6: Add list support
+
 ## 0.1.0
 
 ### Minor Changes
