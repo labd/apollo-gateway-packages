@@ -10,7 +10,6 @@ import {
 	type GraphQLField,
 	type GraphQLSchema,
 	Kind,
-	OperationTypeNode,
 } from "graphql";
 
 export type DirectiveMap = Map<
@@ -73,24 +72,22 @@ class GatewayDirectivesListener<TContext extends BaseContext>
 		const document = requestContext.document;
 
 		for (const definition of document.definitions) {
-			if (
-				definition.kind === Kind.OPERATION_DEFINITION &&
-				definition.operation === OperationTypeNode.MUTATION
-			) {
-				for (const selection of definition.selectionSet.selections) {
-					if (
-						selection.kind === Kind.FIELD &&
-						this.directives.has(selection.name.value)
-					) {
-						const directives = this.directives.get(selection.name.value);
-						if (!directives) {
-							continue;
-						}
+			if (definition.kind !== Kind.OPERATION_DEFINITION) {
+				continue;
+			}
+			for (const selection of definition.selectionSet.selections) {
+				if (
+					selection.kind === Kind.FIELD &&
+					this.directives.has(selection.name.value)
+				) {
+					const directives = this.directives.get(selection.name.value);
+					if (!directives) {
+						continue;
+					}
 
-						for (const [name, args] of directives) {
-							if (this.hooks[name]) {
-								await this.hooks[name](args, requestContext.contextValue);
-							}
+					for (const [name, args] of directives) {
+						if (this.hooks[name]) {
+							await this.hooks[name](args, requestContext.contextValue);
 						}
 					}
 				}
@@ -103,19 +100,24 @@ function* filterDirectives(
 	schema: GraphQLSchema,
 	names: string[],
 ): Generator<[GraphQLField<unknown, unknown, unknown>, DirectiveNode]> {
-	const m = schema.getMutationType();
-	if (!m) {
-		return;
-	}
-
-	for (const [key, value] of Object.entries(m.getFields())) {
-		if (!value.astNode?.directives) {
-			continue;
+	for (const m of [
+		schema.getQueryType(),
+		schema.getMutationType(),
+		schema.getSubscriptionType(),
+	]) {
+		if (!m) {
+			return;
 		}
 
-		for (const directive of value.astNode.directives) {
-			if (names.includes(directive.name.value)) {
-				yield [value, directive];
+		for (const [key, value] of Object.entries(m.getFields())) {
+			if (!value.astNode?.directives) {
+				continue;
+			}
+
+			for (const directive of value.astNode.directives) {
+				if (names.includes(directive.name.value)) {
+					yield [value, directive];
+				}
 			}
 		}
 	}
