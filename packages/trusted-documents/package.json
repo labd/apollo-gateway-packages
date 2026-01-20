@@ -41,6 +41,15 @@
 		"src"
 	],
 	"publishConfig": {
-		"access": "public"
-	}
+		"access": "public",
+		"provenance": true
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/labd/apollo-gateway-packages.git"
+	},
+	"bugs": {
+		"url": "https://github.com/labd/apollo-gateway-packages/issues"
+	},
+	"homepage": "https://github.com/labd/apollo-gateway-packages/tree/main/packages/trusted-documents#apollo-trusted-documents-plugin"
 }
