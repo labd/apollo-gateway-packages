@@ -22,7 +22,7 @@
 		"keyv": "^5.5.5"
 	},
 	"devDependencies": {
-		"@apollo/server": "^4.12.2",
+		"@apollo/server": "^5.2.0",
 		"@biomejs/biome": "^1.9.4",
 		"@changesets/cli": "^2.29.8",
 		"@types/node": "^22.19.7",
