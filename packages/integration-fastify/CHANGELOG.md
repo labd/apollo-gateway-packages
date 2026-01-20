@@ -1,5 +1,11 @@
 # @labdigital/apollo-server-integration-fastify
 
+## 0.1.1
+
+### Patch Changes
+
+- 4349c09: Update dependencies
+
 ## 0.1.0
 
 ### Minor Changes
