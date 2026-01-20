@@ -1,15 +1,5 @@
 # @labdigital/apollo-gateway-directives
 
-## 0.2.0
-
-### Minor Changes
-
-- d36a6b2: Add support for applying directives on all operation types
-
-### Patch Changes
-
-- d36a6b2: Update dependencies
-
 ## 0.1.1
 
 ### Patch Changes
