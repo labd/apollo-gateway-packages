@@ -1,14 +1,92 @@
 import assert from "node:assert";
-import type { BaseContext } from "@apollo/server";
+import type {
+	BaseContext,
+	GraphQLRequestContextDidResolveOperation,
+} from "@apollo/server";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { type GraphQLSchema, parse } from "graphql";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { type DirectiveHooks, GatewayDirectivesPlugin } from ".";
 
 describe("GatewayDirectivesPlugin", () => {
 	let schema: GraphQLSchema;
 	let plugin: GatewayDirectivesPlugin<BaseContext>;
 	let hooks: DirectiveHooks<unknown>;
+
+	const testOperations: {
+		name: string;
+		opName: string;
+		flagValue: boolean;
+		requestContext: GraphQLRequestContextDidResolveOperation<BaseContext>;
+		requestContextWithoutDirective: GraphQLRequestContextDidResolveOperation<BaseContext>;
+	}[] = [
+		{
+			name: "mutation",
+			opName: "doSomething",
+			flagValue: true,
+			requestContext: {
+				contextValue: {},
+				document: parse(/* GraphQL */ `
+					mutation {
+						doSomething
+						doOtherThing
+					}
+				`),
+			} as GraphQLRequestContextDidResolveOperation<BaseContext>,
+			requestContextWithoutDirective: {
+				contextValue: {},
+				document: parse(/* GraphQL */ `
+					mutation {
+						doOtherThing
+					}
+				`),
+			} as GraphQLRequestContextDidResolveOperation<BaseContext>,
+		},
+		{
+			name: "query",
+			opName: "hello",
+			flagValue: false,
+			requestContext: {
+				contextValue: {},
+				document: parse(/* GraphQL */ `
+					query {
+						hello
+						bye
+					}
+				`),
+			} as GraphQLRequestContextDidResolveOperation<BaseContext>,
+			requestContextWithoutDirective: {
+				contextValue: {},
+				document: parse(/* GraphQL */ `
+					query {
+						bye
+					}
+				`),
+			} as GraphQLRequestContextDidResolveOperation<BaseContext>,
+		},
+		{
+			name: "subscription",
+			opName: "thisSubscription",
+			flagValue: true,
+			requestContext: {
+				contextValue: {},
+				document: parse(/* GraphQL */ `
+					subscription {
+						thisSubscription
+						thatSubscription
+					}
+				`),
+			} as GraphQLRequestContextDidResolveOperation<BaseContext>,
+			requestContextWithoutDirective: {
+				contextValue: {},
+				document: parse(/* GraphQL */ `
+					subscription {
+						thatSubscription
+					}
+				`),
+			} as GraphQLRequestContextDidResolveOperation<BaseContext>,
+		},
+	];
 
 	beforeEach(() => {
 		// A dummy directive definition + mutation
@@ -21,8 +99,14 @@ describe("GatewayDirectivesPlugin", () => {
       }
 
       type Query {
-        hello: String
+        hello: String @myDirective(flag: false)
+		bye: String
       }
+
+	  type Subscription {
+		thisSubscription: Int @myDirective(flag: true)
+		thatSubscription: Int
+	  }
     `;
 
 		schema = makeExecutableSchema({ typeDefs });
@@ -37,79 +121,65 @@ describe("GatewayDirectivesPlugin", () => {
 		plugin = new GatewayDirectivesPlugin<BaseContext>(hooks);
 	});
 
-	it("should parse directives in the schema", () => {
-		// WHEN we parse the schema
-		plugin.parseSchema(schema);
+	test.each(testOperations)(
+		"should parse $name directives in the schema",
+		({ opName, flagValue }) => {
+			// WHEN we parse the schema
+			plugin.parseSchema(schema);
 
-		// THEN: we should have discovered our directive usage
-		// Because we have exactly 1 directive usage on `doSomething`
-		expect(plugin.directives.size).toBe(1);
-		expect(plugin.directives.has("doSomething")).toBe(true);
+			const directive = plugin.directives.get(opName);
+			expect(directive).toBeDefined();
 
-		const doSomethingDirectives = plugin.directives.get("doSomething");
-		expect(doSomethingDirectives).toBeDefined();
+			// operation has exactly 1 directive: `myDirective`
+			expect(directive?.size).toBe(1);
+			expect(directive?.has("myDirective")).toBe(true);
 
-		// `doSomething` has exactly 1 directive: `myDirective`
-		expect(doSomethingDirectives?.size).toBe(1);
-		expect(doSomethingDirectives?.has("myDirective")).toBe(true);
+			// The directive arguments should have { flag: true }
+			const doSomethingDirectiveArgs = directive?.get("myDirective");
+			expect(doSomethingDirectiveArgs).toStrictEqual({ flag: flagValue });
+		},
+	);
 
-		// The directive arguments should have { flag: true }
-		const myDirectiveArgs = doSomethingDirectives?.get("myDirective");
-		expect(myDirectiveArgs).toStrictEqual({ flag: true });
-	});
+	test.each(testOperations)(
+		"should invoke hook on $name fields that have directives",
+		async ({ requestContext, flagValue }) => {
+			plugin.parseSchema(schema);
 
-	it("should invoke hook on mutation fields that have directives", async () => {
-		plugin.parseSchema(schema);
+			// The plugin returns a listener with didResolveOperation
+			const listener = await plugin.requestDidStart(requestContext);
+			assert(
+				listener.didResolveOperation,
+				"Expected listener to have didResolveOperation",
+			);
+			await listener.didResolveOperation(requestContext);
 
-		// Setup plugin request flow
-		const requestContext = {
-			contextValue: {}, // your GraphQL context
-			document: parse(/* GraphQL */ `
-        mutation {
-          doSomething
-          doOtherThing
-        }
-      `),
-		} as any; // Type assertion so we can pass a partial or custom object
+			// The field has the directive @myDirective, so the hook should be called.
+			expect(hooks.myDirective).toHaveBeenCalledTimes(1);
+			expect(hooks.myDirective).toHaveBeenCalledWith(
+				{ flag: flagValue }, // arguments from directive
+				requestContext.contextValue,
+			);
 
-		// The plugin returns a listener with didResolveOperation
-		const listener = await plugin.requestDidStart(requestContext);
-		assert(
-			listener.didResolveOperation,
-			"Expected listener to have didResolveOperation",
-		);
-		await listener.didResolveOperation(requestContext);
+			// The other queried field has no directives, so no calls from that.
+		},
+	);
 
-		// "doSomething" has the directive @myDirective, so the hook should be called.
-		expect(hooks.myDirective).toHaveBeenCalledTimes(1);
-		expect(hooks.myDirective).toHaveBeenCalledWith(
-			{ flag: true }, // arguments from directive
-			requestContext.contextValue,
-		);
+	test.each(testOperations)(
+		"should not break if $name has no directive",
+		async ({ requestContextWithoutDirective }) => {
+			plugin.parseSchema(schema);
 
-		// "doOtherThing" has no directives, so no calls from that.
-	});
+			const listener = await plugin.requestDidStart(
+				requestContextWithoutDirective,
+			);
+			assert(
+				listener.didResolveOperation,
+				"Expected listener to have didResolveOperation",
+			);
+			await listener.didResolveOperation(requestContextWithoutDirective);
 
-	it("should not break if mutation has no directive", async () => {
-		plugin.parseSchema(schema);
-
-		const requestContext = {
-			contextValue: {},
-			document: parse(/* GraphQL */ `
-        mutation {
-          doOtherThing
-        }
-      `),
-		} as any;
-
-		const listener = await plugin.requestDidStart(requestContext);
-		assert(
-			listener.didResolveOperation,
-			"Expected listener to have didResolveOperation",
-		);
-		await listener.didResolveOperation(requestContext);
-
-		// "doOtherThing" has no directive, so we do NOT expect the hook to be called
-		expect(hooks.myDirective).not.toHaveBeenCalled();
-	});
+			// "doOtherThing" has no directive, so we do NOT expect the hook to be called
+			expect(hooks.myDirective).not.toHaveBeenCalled();
+		},
+	);
 });
