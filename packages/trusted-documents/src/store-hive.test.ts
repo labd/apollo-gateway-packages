@@ -59,6 +59,33 @@ describe("HiveStore", () => {
 		expect(result).toBe(fetchedDocument);
 	});
 
+	it("should fetch tilde-separated document ids from the endpoint", async () => {
+		const cache = new Keyv({ store: new Map() });
+		const hiveStore = new HiveStore({
+			endpoint: "https://example.com",
+			accessToken: "test-access-token",
+			cache: cache,
+		});
+
+		const documentId = "my-app~version-1~hash";
+		const fetchedDocument = "Fetched Document Content";
+
+		server.use(
+			http.get(
+				"https://example.com/apps/my-app/version-1/hash",
+				({ request }) => {
+					if (request.headers.get("X-Hive-CDN-Key") !== "test-access-token") {
+						return HttpResponse.error();
+					}
+					return HttpResponse.text(fetchedDocument);
+				},
+			),
+		);
+
+		const result = await hiveStore.get(documentId);
+		expect(result).toBe(fetchedDocument);
+	});
+
 	it("should return undefined if the fetch has a network error", async () => {
 		const cache = new Keyv<string | null>({ store: new Map() });
 		const hiveStore = new HiveStore({
