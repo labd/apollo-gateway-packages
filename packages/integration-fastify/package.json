@@ -21,15 +21,15 @@
 		"fastify-plugin": "^5.1.0"
 	},
 	"devDependencies": {
-		"@apollo/server": "^4.12.2",
+		"@apollo/server": "^4.13.0",
 		"@biomejs/biome": "^1.9.4",
-		"@changesets/cli": "^2.29.8",
-		"@types/node": "^22.19.7",
-		"@vitest/coverage-v8": "3.1.1",
-		"fastify": "^5.7.1",
+		"@changesets/cli": "^2.31.0",
+		"@types/node": "^22.20.0",
+		"@vitest/coverage-v8": "4.1.9",
+		"fastify": "^5.9.0",
 		"tsup": "8.4.0",
 		"typescript": "5.8.3",
-		"vitest": "3.1.1"
+		"vitest": "4.1.9"
 	},
 	"files": [
 		"dist",
