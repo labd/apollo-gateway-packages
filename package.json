@@ -33,7 +33,7 @@
 		"vitest": "4.1.9"
 	},
 	"dependencies": {
-		"@biomejs/biome": "^1.9.4",
+		"@biomejs/biome": "^2.5.2",
 		"turbo": "^2.10.2"
 	}
 }
