@@ -26,11 +26,11 @@
 		"@biomejs/biome": "^1.9.4",
 		"@changesets/cli": "^2.31.0",
 		"@types/node": "^22.20.0",
-		"@vitest/coverage-v8": "4.1.9",
+		"@vitest/coverage-v8": "4.1.10",
 		"msw": "^2.14.6",
-		"tsup": "8.4.0",
+		"tsup": "8.5.1",
 		"typescript": "5.8.3",
-		"vitest": "4.1.9"
+		"vitest": "4.1.10"
 	},
 	"peerDependencies": {
 		"@apollo/server": ">4.0.0",

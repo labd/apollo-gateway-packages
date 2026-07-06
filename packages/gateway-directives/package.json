@@ -18,7 +18,7 @@
 		"test:ci": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@graphql-tools/schema": "^10.0.34"
+		"@graphql-tools/schema": "^10.0.35"
 	},
 	"devDependencies": {
 		"@apollo/server": "^4.13.0",
