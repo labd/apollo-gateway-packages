@@ -1,7 +1,7 @@
 ---
-"@labdigital/apollo-gateway-directives": patch
-"@labdigital/apollo-server-integration-fastify": patch
-"@labdigital/apollo-trusted-documents": patch
+"@labdigital/apollo-gateway-directives": minor
+"@labdigital/apollo-server-integration-fastify": minor
+"@labdigital/apollo-trusted-documents": minor
 ---
 
-Update dependencies to resolve security advisories (dev dependencies: @apollo/server 5, vitest 4.1.12, fastify 5.12.7)
+Require Node.js >= 22.18 (Node 20 is end-of-life) and update dependencies to resolve security advisories.
