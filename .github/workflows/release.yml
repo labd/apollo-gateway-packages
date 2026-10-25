@@ -19,7 +19,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # main
+        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # v1.0.0
 
       - name: Lint
         run: pnpm lint
@@ -42,7 +42,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # main
+        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # v1.0.0
         with:
           node-version: ${{ matrix.node }}
 
@@ -71,7 +71,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # main
+        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # v1.0.0
 
       - name: Run build
         run: pnpm build
