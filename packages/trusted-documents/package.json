@@ -46,7 +46,8 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/labd/apollo-gateway-packages.git"
+		"url": "git+https://github.com/labd/apollo-gateway-packages.git",
+		"directory": "packages/trusted-documents"
 	},
 	"bugs": {
 		"url": "https://github.com/labd/apollo-gateway-packages/issues"

@@ -41,7 +41,8 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/labd/apollo-gateway-packages.git"
+		"url": "git+https://github.com/labd/apollo-gateway-packages.git",
+		"directory": "packages/integration-fastify"
 	},
 	"bugs": {
 		"url": "https://github.com/labd/apollo-gateway-packages/issues"
