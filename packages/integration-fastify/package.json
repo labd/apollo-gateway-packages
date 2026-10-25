@@ -23,11 +23,11 @@
 	"devDependencies": {
 		"@apollo/server": "^5.5.1",
 		"@biomejs/biome": "^1.9.4",
-		"@changesets/cli": "^2.31.0",
+		"@changesets/cli": "^3.0.3",
 		"@types/node": "^22.20.0",
 		"@vitest/coverage-v8": "4.1.12",
 		"fastify": "^5.12.7",
-		"tsup": "8.4.0",
+		"tsup": "^9.0.0",
 		"typescript": "5.8.3",
 		"vitest": "4.1.12"
 	},
@@ -46,5 +46,8 @@
 	"bugs": {
 		"url": "https://github.com/labd/apollo-gateway-packages/issues"
 	},
-	"homepage": "https://github.com/labd/apollo-gateway-packages/tree/main/packages/integration-fastify#labdigitalapollo-server-integration-fastify"
+	"homepage": "https://github.com/labd/apollo-gateway-packages/tree/main/packages/integration-fastify#labdigitalapollo-server-integration-fastify",
+	"engines": {
+		"node": ">=22.18"
+	}
 }
