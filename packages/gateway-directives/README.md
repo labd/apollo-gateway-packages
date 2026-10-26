@@ -1,5 +1,7 @@
 # Apollo Gateway Directives Plugin
 
+[![npm](https://img.shields.io/npm/v/@labdigital/apollo-gateway-directives)](https://www.npmjs.com/package/@labdigital/apollo-gateway-directives)
+
 This plugin allows you to handle GraphQL directives within Apollo Gateway.
 
 ## Installation
