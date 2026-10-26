@@ -5,8 +5,8 @@ import {
 	type ApolloServerPlugin,
 	type BaseContext,
 	type GraphQLServerListener,
-	type HTTPGraphQLRequest,
 	HeaderMap,
+	type HTTPGraphQLRequest,
 } from "@apollo/server";
 import type {
 	FastifyInstance,
