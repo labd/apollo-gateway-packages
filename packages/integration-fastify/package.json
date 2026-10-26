@@ -18,7 +18,6 @@
 		"check": "pnpm lint && pnpm typecheck",
 		"format": "biome check --fix",
 		"lint": "biome check",
-		"lint:package": "publint --strict",
 		"publish:ci": "pnpm build && pnpm changeset publish",
 		"publish:version": "pnpm changeset version && pnpm format",
 		"test": "vitest run",
