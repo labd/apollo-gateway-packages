@@ -1,5 +1,13 @@
 # Apollo Gateway Packages
 
+[![CI](https://github.com/labd/apollo-gateway-packages/actions/workflows/release.yml/badge.svg)](https://github.com/labd/apollo-gateway-packages/actions/workflows/release.yml)
+
+| Package | Version |
+| --- | --- |
+| [@labdigital/apollo-gateway-directives](./packages/gateway-directives) | [![npm](https://img.shields.io/npm/v/@labdigital/apollo-gateway-directives)](https://www.npmjs.com/package/@labdigital/apollo-gateway-directives) |
+| [@labdigital/apollo-server-integration-fastify](./packages/integration-fastify) | [![npm](https://img.shields.io/npm/v/@labdigital/apollo-server-integration-fastify)](https://www.npmjs.com/package/@labdigital/apollo-server-integration-fastify) |
+| [@labdigital/apollo-trusted-documents](./packages/trusted-documents) | [![npm](https://img.shields.io/npm/v/@labdigital/apollo-trusted-documents)](https://www.npmjs.com/package/@labdigital/apollo-trusted-documents) |
+
 A collection of plugins and integrations for Apollo Server and Apollo Gateway.
 
 ## Packages

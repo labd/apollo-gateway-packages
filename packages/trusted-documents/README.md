@@ -1,5 +1,7 @@
 # Apollo Trusted Documents Plugin
 
+[![npm](https://img.shields.io/npm/v/@labdigital/apollo-trusted-documents)](https://www.npmjs.com/package/@labdigital/apollo-trusted-documents)
+
 This plugin enables support for trusted documents (persisted queries) in Apollo Server, with built-in support for GraphQL Hive's App Deployments.
 
 ## Installation
