@@ -9,27 +9,32 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsdown",
-		"check": "pnpm lint && tsc",
+		"check": "pnpm lint && pnpm typecheck",
 		"format": "biome check --fix",
 		"lint": "biome check",
 		"publish:ci": "pnpm build && pnpm changeset publish",
 		"publish:version": "pnpm changeset version && pnpm format",
 		"test": "vitest run",
-		"test:ci": "vitest run --coverage"
+		"test:ci": "vitest run --coverage",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"fastify-plugin": "^5.1.0"
+		"fastify-plugin": "^6.0.1"
 	},
 	"devDependencies": {
 		"@apollo/server": "^5.5.1",
-		"@biomejs/biome": "^1.9.4",
+		"@biomejs/biome": "^2.5.15",
 		"@changesets/cli": "^3.0.3",
-		"@types/node": "^22.20.0",
-		"@vitest/coverage-v8": "4.1.12",
+		"@types/node": "^26.6.5",
+		"@vitest/coverage-v8": "5.0.3",
 		"fastify": "^5.12.7",
 		"tsdown": "^0.23.1",
-		"typescript": "5.8.3",
-		"vitest": "4.1.12"
+		"typescript": "7.0.2",
+		"vitest": "5.0.3"
+	},
+	"peerDependencies": {
+		"@apollo/server": "^4.0.0 || ^5.0.0",
+		"fastify": "^5.0.0"
 	},
 	"files": [
 		"dist",
@@ -49,6 +54,6 @@
 	},
 	"homepage": "https://github.com/labd/apollo-gateway-packages/tree/main/packages/integration-fastify#labdigitalapollo-server-integration-fastify",
 	"engines": {
-		"node": ">=22.18"
+		"node": ">=22.19"
 	}
 }

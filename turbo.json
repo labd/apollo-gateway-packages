@@ -1,5 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
+	"agentGuidance": false,
 	"tasks": {
 		"topo": {
 			"dependsOn": ["^topo"]
@@ -8,8 +9,8 @@
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", "README.md"]
 		},
-		"tsc": {
-			"dependsOn": ["topo"]
+		"typecheck": {
+			"dependsOn": ["^build"]
 		},
 		"lint": {
 			"dependsOn": ["topo"],

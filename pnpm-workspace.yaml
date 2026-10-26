@@ -3,8 +3,7 @@ packages:
 
 # Require packages to be at least 14 days old before being allowed to be installed
 minimumReleaseAge: 20160
-# Already-locked versions younger than 14 days when this policy was introduced;
-# remove these once they have aged past the cutoff.
+# Security fixes locked while younger than 14 days; remove once they have aged past the cutoff.
 minimumReleaseAgeExclude:
   - "@oxc-project/types@0.155.0"
   - "@rolldown/binding-android-arm-eabi@1.2.15"
@@ -47,14 +46,6 @@ minimumReleaseAgeExclude:
   - "@rollup/rollup-win32-ia32-msvc@4.65.0"
   - "@rollup/rollup-win32-x64-gnu@4.65.0"
   - "@rollup/rollup-win32-x64-msvc@4.65.0"
-  - "@vitest/coverage-v8@4.1.12"
-  - "@vitest/expect@4.1.12"
-  - "@vitest/mocker@4.1.12"
-  - "@vitest/pretty-format@4.1.12"
-  - "@vitest/runner@4.1.12"
-  - "@vitest/snapshot@4.1.12"
-  - "@vitest/spy@4.1.12"
-  - "@vitest/utils@4.1.12"
   - "body-parser@2.4.0"
   - "cac@7.1.0"
   - "fast-json-stringify@7.1.3"
@@ -66,7 +57,6 @@ minimumReleaseAgeExclude:
   - "rolldown-plugin-dts@0.28.8"
   - "rolldown@1.2.15"
   - "rollup@4.65.0"
-  - "vitest@4.1.12"
 
 # Build scripts were never run under pnpm 10 (not approved); keep it that way explicitly
 allowBuilds:
@@ -74,6 +64,3 @@ allowBuilds:
   "@biomejs/biome": false
   esbuild: false
   msw: false
-
-overrides:
-  vite: ^7.3.7

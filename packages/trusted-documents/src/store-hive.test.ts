@@ -1,5 +1,5 @@
 import { Keyv } from "keyv";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { HiveStore } from "./store-hive";
@@ -8,7 +8,7 @@ const server = setupServer();
 
 describe("HiveStore", () => {
 	beforeAll(() => {
-		server.listen({ onUnhandledRequest: "error" });
+		server.listen({ onUnhandledFrame: "error" });
 	});
 	afterEach(() => {
 		server.resetHandlers();
