@@ -62,8 +62,10 @@ request and reply:
 import { ApolloServer } from "@apollo/server";
 import {
   type ApolloFastifyContextFunction,
+  type FastifyApolloPluginOptions,
   fastifyApollo,
 } from "@labdigital/apollo-server-integration-fastify";
+import Fastify from "fastify";
 
 interface MyContext {
   authorization?: string;
@@ -71,18 +73,27 @@ interface MyContext {
 
 const context: ApolloFastifyContextFunction<MyContext> = async (
   request,
-  reply,
+  _reply,
 ) => ({
   authorization: request.headers.authorization,
 });
 
-const apollo = new ApolloServer<MyContext>({ typeDefs, resolvers });
+const fastify = Fastify();
+
+const apollo = new ApolloServer<MyContext>({
+  typeDefs: `type Query { me: String }`,
+  resolvers: {
+    Query: { me: (_parent, _args, ctx: MyContext) => ctx.authorization },
+  },
+});
 await apollo.start();
 
-await fastify.register(fastifyApollo(apollo), {
+const options: FastifyApolloPluginOptions<MyContext> = {
   path: "/api/graphql",
   context,
-});
+};
+
+await fastify.register(fastifyApollo(apollo), options);
 ```
 
 ## API
@@ -111,6 +122,12 @@ Options passed as the second argument of `fastify.register()`:
 
 The exported types are `ApolloFastifyContextFunction` and
 `FastifyApolloPluginOptions`.
+
+`fastifyApollo()` returns a plain `FastifyPluginAsync`, so Fastify does not
+know the option types. Passing the options inline as an object literal to
+`fastify.register()` can fail type checking with "Object literal may only
+specify known properties". Declare them as `FastifyApolloPluginOptions<Context>`
+first, as in the context example above.
 
 ## Development
 
