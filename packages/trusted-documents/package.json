@@ -32,14 +32,14 @@
 		"@biomejs/biome": "^2.5.15",
 		"@changesets/cli": "^3.0.3",
 		"@types/node": "^26.6.5",
-		"@vitest/coverage-v8": "5.0.3",
+		"@vitest/coverage-v8": "5.0.5",
 		"graphql": "^16.14.2",
 		"keyv": "^6.1.0",
 		"msw": "^3.0.3",
 		"publint": "^0.3.25",
 		"tsdown": "^0.23.1",
 		"typescript": "7.0.2",
-		"vitest": "5.0.3"
+		"vitest": "5.0.5"
 	},
 	"peerDependencies": {
 		"@apollo/server": ">4.0.0",
