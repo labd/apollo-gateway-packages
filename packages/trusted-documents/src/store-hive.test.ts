@@ -1,7 +1,15 @@
 import { Keyv } from "keyv";
 import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import {
+	afterAll,
+	afterEach,
+	beforeAll,
+	describe,
+	expect,
+	it,
+	vi,
+} from "vitest";
 import { HiveStore } from "./store-hive";
 
 const server = setupServer();
@@ -12,6 +20,7 @@ describe("HiveStore", () => {
 	});
 	afterEach(() => {
 		server.resetHandlers();
+		vi.useRealTimers();
 	});
 	afterAll(() => {
 		server.close();
@@ -143,5 +152,86 @@ describe("HiveStore", () => {
 		const result = await hiveStore.get(documentId);
 
 		expect(result).toBeUndefined();
+	});
+
+	it("should not cache a failed fetch", async () => {
+		const cache = new Keyv<string | null>({ store: new Map() });
+		const hiveStore = new HiveStore({
+			endpoint: "https://example.com",
+			accessToken: "test-access-token",
+			cache: cache,
+		});
+
+		const documentId = "my-app/version-1/hash";
+		const fetchedDocument = "Fetched Document Content";
+
+		let count = 0;
+		server.use(
+			http.get(`https://example.com/apps/${documentId}`, () => {
+				count += 1;
+				if (count === 1) {
+					return new HttpResponse(null, { status: 503 });
+				}
+				return HttpResponse.text(fetchedDocument);
+			}),
+		);
+
+		expect(await hiveStore.get(documentId)).toBeUndefined();
+		expect(await hiveStore.get(documentId)).toBe(fetchedDocument);
+	});
+
+	it("should not cache a network error", async () => {
+		vi.useFakeTimers({ toFake: ["setTimeout"] });
+
+		const cache = new Keyv<string | null>({ store: new Map() });
+		const hiveStore = new HiveStore({
+			endpoint: "https://example.com",
+			accessToken: "test-access-token",
+			cache: cache,
+		});
+
+		const documentId = "my-app/version-1/hash";
+		const fetchedDocument = "Fetched Document Content";
+
+		server.use(
+			http.get(`https://example.com/apps/${documentId}`, () => {
+				return HttpResponse.error();
+			}),
+		);
+
+		const pending = hiveStore.get(documentId);
+		await vi.runAllTimersAsync();
+		expect(await pending).toBeUndefined();
+
+		server.use(
+			http.get(`https://example.com/apps/${documentId}`, () => {
+				return HttpResponse.text(fetchedDocument);
+			}),
+		);
+
+		expect(await hiveStore.get(documentId)).toBe(fetchedDocument);
+	});
+
+	it("should cache a document that does not exist", async () => {
+		const cache = new Keyv<string | null>({ store: new Map() });
+		const hiveStore = new HiveStore({
+			endpoint: "https://example.com",
+			accessToken: "test-access-token",
+			cache: cache,
+		});
+
+		const documentId = "my-app/version-1/hash";
+
+		let count = 0;
+		server.use(
+			http.get(`https://example.com/apps/${documentId}`, () => {
+				count += 1;
+				return new HttpResponse(null, { status: 404 });
+			}),
+		);
+
+		expect(await hiveStore.get(documentId)).toBeUndefined();
+		expect(await hiveStore.get(documentId)).toBeUndefined();
+		expect(count).toBe(1);
 	});
 });

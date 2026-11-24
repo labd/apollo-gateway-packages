@@ -53,15 +53,22 @@ export class HiveStore implements DocumentStore {
 				if (res.ok) {
 					return await res.text();
 				}
-				return null;
+				if (res.status === 404) {
+					return null;
+				}
+				console.error(`failed to fetch document from hive: HTTP ${res.status}`);
+				return undefined;
 			})
 			.catch((error) => {
 				console.error("failed to fetch document from hive: ", error);
-				return null;
+				return undefined;
 			});
 
-		// Also set null values
-		await this.cache.set(documentId, document);
+		// Only a 404 means Hive does not have the document.
+		// A failed fetch is not cached, so the next request tries again.
+		if (document !== undefined) {
+			await this.cache.set(documentId, document);
+		}
 		return document ? document : undefined;
 	}
 }
