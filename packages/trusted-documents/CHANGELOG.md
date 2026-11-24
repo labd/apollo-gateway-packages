@@ -1,5 +1,11 @@
 # @labdigital/apollo-trusted-documents
 
+## 0.3.1
+
+### Patch Changes
+
+- 1e2112d: `HiveStore` no longer caches a failed fetch from the Hive CDN. Only a 404 is cached as a missing document; a network error or any other status is fetched again on the next request instead of hiding the document for as long as the cache keeps the entry.
+
 ## 0.3.0
 
 ### Minor Changes
