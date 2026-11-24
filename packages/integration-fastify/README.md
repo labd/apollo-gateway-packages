@@ -32,17 +32,17 @@ npm install @labdigital/apollo-server-integration-fastify
 ```ts
 import { ApolloServer } from "@apollo/server";
 import {
-  fastifyApollo,
-  fastifyApolloDrainPlugin,
+	fastifyApollo,
+	fastifyApolloDrainPlugin,
 } from "@labdigital/apollo-server-integration-fastify";
 import Fastify from "fastify";
 
 const fastify = Fastify();
 
 const apollo = new ApolloServer({
-  typeDefs: `type Query { hello: String }`,
-  resolvers: { Query: { hello: () => "Hello world" } },
-  plugins: [fastifyApolloDrainPlugin(fastify)],
+	typeDefs: `type Query { hello: String }`,
+	resolvers: { Query: { hello: () => "Hello world" } },
+	plugins: [fastifyApolloDrainPlugin(fastify)],
 });
 
 // The Apollo server must be started before calling fastifyApollo()
@@ -61,36 +61,36 @@ request and reply:
 ```ts
 import { ApolloServer } from "@apollo/server";
 import {
-  type ApolloFastifyContextFunction,
-  type FastifyApolloPluginOptions,
-  fastifyApollo,
+	type ApolloFastifyContextFunction,
+	type FastifyApolloPluginOptions,
+	fastifyApollo,
 } from "@labdigital/apollo-server-integration-fastify";
 import Fastify from "fastify";
 
 interface MyContext {
-  authorization?: string;
+	authorization?: string;
 }
 
 const context: ApolloFastifyContextFunction<MyContext> = async (
-  request,
-  _reply,
+	request,
+	_reply,
 ) => ({
-  authorization: request.headers.authorization,
+	authorization: request.headers.authorization,
 });
 
 const fastify = Fastify();
 
 const apollo = new ApolloServer<MyContext>({
-  typeDefs: `type Query { me: String }`,
-  resolvers: {
-    Query: { me: (_parent, _args, ctx: MyContext) => ctx.authorization },
-  },
+	typeDefs: `type Query { me: String }`,
+	resolvers: {
+		Query: { me: (_parent, _args, ctx: MyContext) => ctx.authorization },
+	},
 });
 await apollo.start();
 
 const options: FastifyApolloPluginOptions<MyContext> = {
-  path: "/api/graphql",
-  context,
+	path: "/api/graphql",
+	context,
 };
 
 await fastify.register(fastifyApollo(apollo), options);
@@ -114,11 +114,11 @@ connections.
 
 Options passed as the second argument of `fastify.register()`:
 
-| Option    | Type                                                  | Default                       | Description                                       |
-| --------- | ----------------------------------------------------- | ----------------------------- | ------------------------------------------------- |
-| `path`    | `string`                                              | `"/graphql"`                  | URL of the GraphQL route.                         |
-| `method`  | `"GET" \| "POST" \| "OPTIONS"` or an array of these   | `["GET", "POST", "OPTIONS"]`  | HTTP method(s) the route accepts.                 |
-| `context` | `ApolloFastifyContextFunction<Context>`               | returns `{}`                  | Builds the GraphQL context from `request, reply`. |
+| Option    | Type                                                | Default                      | Description                                       |
+| --------- | --------------------------------------------------- | ---------------------------- | ------------------------------------------------- |
+| `path`    | `string`                                            | `"/graphql"`                 | URL of the GraphQL route.                         |
+| `method`  | `"GET" \| "POST" \| "OPTIONS"` or an array of these | `["GET", "POST", "OPTIONS"]` | HTTP method(s) the route accepts.                 |
+| `context` | `ApolloFastifyContextFunction<Context>`             | returns `{}`                 | Builds the GraphQL context from `request, reply`. |
 
 The exported types are `ApolloFastifyContextFunction` and
 `FastifyApolloPluginOptions`.

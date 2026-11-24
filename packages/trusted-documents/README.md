@@ -16,30 +16,33 @@ pnpm add @labdigital/apollo-trusted-documents
 
 ```ts
 import { ApolloServer } from "@apollo/server";
-import { TrustedDocumentsPlugin, HiveStore } from "@labdigital/apollo-trusted-documents";
+import {
+	TrustedDocumentsPlugin,
+	HiveStore,
+} from "@labdigital/apollo-trusted-documents";
 import Keyv from "keyv";
 
 // Create a cache for the documents (e.g., using Keyv)
 const cache = new Keyv();
 
 const trustedDocumentsPlugin = new TrustedDocumentsPlugin({
-  store: new HiveStore({
-    endpoint: "https://cdn.graphql-hive.com",
-    accessToken: process.env.HIVE_CDN_ACCESS_TOKEN,
-    cache,
-  }),
-  // Optional: strict mode (default: true)
-  // When enabled, only trusted documents are allowed
-  strict: true,
-  // Optional: bypass header for development/testing
-  bypassHeader: "x-bypass-trusted-operations",
-  bypassSecret: process.env.BYPASS_SECRET,
+	store: new HiveStore({
+		endpoint: "https://cdn.graphql-hive.com",
+		accessToken: process.env.HIVE_CDN_ACCESS_TOKEN,
+		cache,
+	}),
+	// Optional: strict mode (default: true)
+	// When enabled, only trusted documents are allowed
+	strict: true,
+	// Optional: bypass header for development/testing
+	bypassHeader: "x-bypass-trusted-operations",
+	bypassSecret: process.env.BYPASS_SECRET,
 });
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  plugins: [trustedDocumentsPlugin],
+	typeDefs,
+	resolvers,
+	plugins: [trustedDocumentsPlugin],
 });
 
 await server.start();
@@ -53,22 +56,22 @@ You can implement your own document store by implementing the `DocumentStore` in
 import type { DocumentStore } from "@labdigital/apollo-trusted-documents";
 
 class MyCustomStore implements DocumentStore {
-  async get(documentId: string): Promise<string | undefined> {
-    // Fetch the document from your custom store
-    return myDatabase.getDocument(documentId);
-  }
+	async get(documentId: string): Promise<string | undefined> {
+		// Fetch the document from your custom store
+		return myDatabase.getDocument(documentId);
+	}
 }
 
 const trustedDocumentsPlugin = new TrustedDocumentsPlugin({
-  store: new MyCustomStore(),
+	store: new MyCustomStore(),
 });
 ```
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `store` | `DocumentStore` | - | The document store to use for fetching trusted documents |
-| `strict` | `boolean` | `true` | When enabled, only trusted documents are allowed |
-| `bypassHeader` | `string` | `"x-bypass-trusted-operations"` | Header name to check for bypass secret |
-| `bypassSecret` | `string` | - | Secret value to allow bypassing trusted documents check |
+| Option         | Type            | Default                         | Description                                              |
+| -------------- | --------------- | ------------------------------- | -------------------------------------------------------- |
+| `store`        | `DocumentStore` | -                               | The document store to use for fetching trusted documents |
+| `strict`       | `boolean`       | `true`                          | When enabled, only trusted documents are allowed         |
+| `bypassHeader` | `string`        | `"x-bypass-trusted-operations"` | Header name to check for bypass secret                   |
+| `bypassSecret` | `string`        | -                               | Secret value to allow bypassing trusted documents check  |
